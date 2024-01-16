@@ -25,10 +25,11 @@
 # You can verify through:
 # docker login ${acr.azureco.io} --username ${client_id} --password ${app_password}
 
-resource "azurerm_role_assignment" "appServiceAcrPush" {
-    scope               = azurerm_container_registry.acr.id
-    # If you want to use a custom rule:
-    # role_definition_id  = azurerm_role_definition.acrPush.role_definition_resource_id    
-    role_definition_name = "AcrPush"
-    principal_id        = "${azuread_application.app.client_id}"
-}
+# TODO: Fix this -- it fails in Azure, had to do manually via CLI
+# resource "azurerm_role_assignment" "appServiceAcrPush" {
+#     scope               = azurerm_container_registry.acr.id
+#     # If you want to use a custom rule:
+#     # role_definition_id  = azurerm_role_definition.acrPush.role_definition_resource_id    
+#     role_definition_name = "AcrPush"
+#     principal_id        = "${azuread_application.app.client_id}"
+# }
