@@ -1,16 +1,22 @@
-# We strongly recommend using the required_providers block to set the
-# Azure Provider source and version being used
+# 1. Specify the version of the AzureRM Provider to use
 terraform {
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "=3.0.0"
+      source = "hashicorp/azurerm"
+      version = "=3.0.1"
     }
   }
 }
 
-# Configure the Microsoft Azure Provider
+# 2. Configure the AzureRM Provider
 provider "azurerm" {
-  skip_provider_registration = true # This is only required when the User, Service Principal, or Identity running Terraform lacks the permissions to register Azure Resource Providers.
+  # The AzureRM Provider supports authenticating using via the Azure CLI, a Managed Identity
+  # and a Service Principal. More information on the authentication methods supported by
+  # the AzureRM Provider can be found here:
+  # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs#authenticating-to-azure
+
+  # The features block allows changing the behaviour of the Azure Provider, more
+  # information can be found here:
+  # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/features-block
   features {}
 }

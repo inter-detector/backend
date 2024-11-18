@@ -8,7 +8,6 @@ output "app_client_id" {
     sensitive  =  true
 }
 
-
 output "app_password" {
     value  =  azuread_application_password.key.value
     sensitive  =  true

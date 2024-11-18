@@ -4,11 +4,20 @@
 
 1. [Install terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 2. [Install Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+3. Create a subscription in Azure
 
 ### Create
 
-```
+```sh
+# Login to Azure
+az login --scope https://graph.microsoft.com//.default
+# Or, if you don't want to open browser:
+az login --use-device-code
 terraform init
+# Optional, choose workspace
+terraform workspace new dev
+# Or, if the workspace exists
+terraform workspace dev
 terraform plan
 terraform apply
 ```
@@ -17,6 +26,14 @@ terraform apply
 
 `terraform destroy`
 
-### Configuration
+### CI/CD with Scraper Github
 
-- CI/CD to mirror Docker container to ACR: use `terraform output app_client_id` as `$AZURE_CLIENT_ID`, `terraform output app_password` as `$AZURE_CLIENT_SECRET`, and `${azurerm_container_registry.acr.name}` as `$AZURE_REGISTRY` as repository secrets
+```sh
+# For CI/CD
+# Use this as AZURE_CLIENT_ID
+terraform output app_client_id
+# Use this as AZURE_CLIENT_SECRET
+terraform output app_password
+# Use this as AZURE_REGISTRY
+# azurerm_container_registry.acr.name
+```
