@@ -12,3 +12,9 @@ output "app_password" {
     value  =  azuread_application_password.key.value
     sensitive  =  true
 }
+
+# The IP address that you can whitelist in whatever proxy service you use
+output "ip_address" {
+    value = module.networking.output.ip_address
+    sensitive = true
+}
