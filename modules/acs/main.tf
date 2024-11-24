@@ -1,23 +1,29 @@
-# resource "azurerm_container_group" "task" {
-#   name                = "${var.prefix}-run-task"
-#   location            = azurerm_resource_group.rg.location
-#   resource_group_name = azurerm_resource_group.rg.name
-#   os_type             = "Linux"
+# locals {
+#   app = var.append_workspace ? "${var.app}${title(terraform.workspace)}" : var.app
+# }
 
+
+# resource "azurerm_container_group" "task" {
+#   name                = local.app
+#   location            = var.resource_group_location
+#   resource_group_name = var.resource_group_name
+#   os_type             = "Linux"
+  
+#   # Give permissions to read from ACR
 #   image_registry_credential {
 #     username = azurerm_container_registry.acr.admin_username
 #     password = azurerm_container_registry.acr.admin_password
 #     server   = azurerm_container_registry.acr.login_server
 #   }
 
-#   diagnostics {
-#     log_analytics {
-#      log_type      = "ContainerInsights"
-#       workspace_id  = azurerm_log_analytics_workspace.logs.workspace_id
-#       workspace_key = azurerm_log_analytics_workspace.logs.primary_shared_key
-#       metadata      = {}
-#     }
-#   }
+# #   diagnostics {
+# #     log_analytics {
+# #      log_type      = "ContainerInsights"
+# #       workspace_id  = azurerm_log_analytics_workspace.logs.workspace_id
+# #       workspace_key = azurerm_log_analytics_workspace.logs.primary_shared_key
+# #       metadata      = {}
+# #     }
+# #   }
 
 #   ip_address_type = "None"
 
@@ -28,14 +34,16 @@
 
 #   container {
 #     name                  = "runner"
-#     image                 = "${azurerm_container_registry.acr.login_server}/crawler:latest"
+#     image                 = "${var.repository_login_server}/${var.image_name}:${var.image_tag}"
 #     cpu                   = "0.5"
 #     memory                = "1.5"
 #     environment_variables = {      
-#       "AZURE_CONTAINER"   = azurerm_storage_container.storagecontainer.name      
-#       "AZURE_ACCOUNT_URL" = "https://${azurerm_storage_account.storageacc.name}.blob.core.windows.net/"
-#       "AZURE_ACCOUNT_KEY" = azurerm_storage_account.storageacc.primary_access_key
+#       "AZURE_CONTAINER"   = var.azure_storage_container      
+#       "AZURE_ACCOUNT_URL" = "https://${var.azure_account_url}.blob.core.windows.net/"
+#       "AZURE_ACCOUNT_KEY" = var.azure_account_key
 #     }
+#     # Run the shellscript in the `crawler` repository that triggers
+#     # code to run.
 #     commands              = ["sh", "run.sh"]
 #   }
 
