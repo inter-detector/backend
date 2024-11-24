@@ -1,7 +1,7 @@
 module "resource_group" {
     source = "./modules/resource-group"
 
-    region                   = "West US"
+    region                   = "West US 2"
     app                      = "crawlerResourceGroup"
 }
 
@@ -12,6 +12,45 @@ module "acr" {
     resource_group_name     = module.resource_group.output.resource_group_name
     resource_group_location = module.resource_group.output.resource_group_location
 }
+
+module "networking" {
+    source = "./modules/networking"
+
+    app                     = "crawlerNetwork"
+    nat_gateway_zones       = ["2"]
+    resource_group_name     = module.resource_group.output.resource_group_name
+    resource_group_location = module.resource_group.output.resource_group_location
+}
+
+module "storage_container" {
+    source = "./modules/storage-container"
+
+    # Cannot add titled 'Dev' workspace, because storage containers only allow
+    # lowercase letters and numbers, and must be between 3 and 24 characters
+    # in length.
+    append_workspace        = false
+    app                     = "storagecontainer"
+    resource_group_name     = module.resource_group.output.resource_group_name
+    resource_group_location = module.resource_group.output.resource_group_location
+}
+
+# TODO: The below is untested. Not sure how to do this in Azure console either.
+# module "acs" {
+#     source = "./modules/acs"
+
+#     app                     = "crawlerTask"
+#     repository_login_server = module.acr.repository_server
+#     resource_group_name     = module.resource_group.output.resource_group_name
+#     resource_group_location = module.resource_group.output.resource_group_location
+#     # TODO: Replace the below with a config block
+#     image_name              = "crawler"
+#     image_tag               = "latest"
+#     azure_storage_container = module.storage_container.storage_container_name
+#     azure_account_url       = module.storage_container.storage_account_name
+#     azure_account_key       = module.storage_container.storage_account_primary_access_key
+# }
+
+# Below is everything required for CI of the crawler's Github repository:
 
 # A Service Principal is an application within Azure Active Directory
 # whose authentication tokens can be used as the client_id, client_secret,
