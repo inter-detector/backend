@@ -1,5 +1,7 @@
 ### Inter-detector backend
 
+![Project architecture](docs/diagram.jpg "Title")
+
 ### Installation Steps
 
 1. [Install terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
