@@ -38,7 +38,9 @@ terraform apply
 
 `terraform destroy`
 
-### CI/CD with Scraper Github
+### CI/CD Integration
+
+The CI/CD pipeline is handled as a Github action in the data gathering repository. Include these values as repository secrets!
 
 ```sh
 # For CI/CD
