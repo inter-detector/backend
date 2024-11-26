@@ -1,25 +1,25 @@
 module "resource_group" {
     source = "./modules/resource-group"
 
-    region                   = "West US 2"
-    app                      = "crawlerResourceGroup"
+    region                     = "West US 2"
+    app                        = "crawlerResourceGroup"
 }
 
 module "acr" {
     source = "./modules/acr"
 
-    app                     = "crawlerAcr"
-    resource_group_name     = module.resource_group.output.resource_group_name
-    resource_group_location = module.resource_group.output.resource_group_location
+    app                       = "crawlerAcr"
+    resource_group_name       = module.resource_group.output.resource_group_name
+    resource_group_location   = module.resource_group.output.resource_group_location
 }
 
 module "networking" {
     source = "./modules/networking"
 
-    app                     = "crawlerNetwork"
-    nat_gateway_zones       = ["2"]
-    resource_group_name     = module.resource_group.output.resource_group_name
-    resource_group_location = module.resource_group.output.resource_group_location
+    app                       = "crawlerNetwork"
+    nat_gateway_zones         = ["2"]
+    resource_group_name       = module.resource_group.output.resource_group_name
+    resource_group_location   = module.resource_group.output.resource_group_location
 }
 
 module "storage_container" {
@@ -28,27 +28,31 @@ module "storage_container" {
     # Cannot add titled 'Dev' workspace, because storage containers only allow
     # lowercase letters and numbers, and must be between 3 and 24 characters
     # in length.
-    append_workspace        = false
-    app                     = "storagecontainer"
-    resource_group_name     = module.resource_group.output.resource_group_name
-    resource_group_location = module.resource_group.output.resource_group_location
+    append_workspace          = false
+    app                       = "crawlstorage"
+    resource_group_name       = module.resource_group.output.resource_group_name
+    resource_group_location   = module.resource_group.output.resource_group_location
 }
 
 # TODO: The below is untested. Not sure how to do this in Azure console either.
-# module "acs" {
-#     source = "./modules/acs"
+module "acs" {
+    source = "./modules/acs"
 
-#     app                     = "crawlerTask"
-#     repository_login_server = module.acr.repository_server
-#     resource_group_name     = module.resource_group.output.resource_group_name
-#     resource_group_location = module.resource_group.output.resource_group_location
-#     # TODO: Replace the below with a config block
-#     image_name              = "crawler"
-#     image_tag               = "latest"
-#     azure_storage_container = module.storage_container.storage_container_name
-#     azure_account_url       = module.storage_container.storage_account_name
-#     azure_account_key       = module.storage_container.storage_account_primary_access_key
-# }
+    app                       = "crawlerTask"
+    container_name            = "crawl-container-${terraform.workspace}"
+    repository_login_server   = module.acr.output.repository_server
+    repository_login_username = module.acr.output.repository_username
+    repository_login_password = module.acr.output.repository_password
+    resource_group_name       = module.resource_group.output.resource_group_name
+    resource_group_location   = module.resource_group.output.resource_group_location
+    # TODO: Replace the below with a config block
+    image_name                = "crawler"
+    image_tag                 = "latest"
+    azure_storage_container   = module.storage_container.output.storage_container_name
+    azure_account_url         = module.storage_container.output.storage_account_name
+    azure_account_key         = module.storage_container.output.storage_account_primary_access_key
+    network_profile_id        = module.networking.output.network_profile_id
+}
 
 # Below is everything required for CI of the crawler's Github repository:
 
