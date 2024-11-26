@@ -19,18 +19,38 @@ variable "resource_group_location" {
   type        = string
 }
 
+variable "container_name" {
+  description = "(Required) The name of the container"
+  type        = string
+}
+
+variable "network_profile_id" {
+  description = "(Required) The network profile ID to use with container instances"
+  type        = string 
+}
+
 variable "repository_login_server" {
   description = "(Required) The login server of the Azure repository"
   type        = string
 }
 
+variable "repository_login_username" {
+  description = "(Required) The repository username of the container registry"
+  type        = string
+}
+
+variable "repository_login_password" {
+  description = "(Required) The repository password of the container registry"
+  type        = string  
+}
+
 variable "image_name" {
-  description = "(Required) The image name in the container repository"
+  description = "(Required) The image name in the container registry"
   type        = string
 }
 
 variable "image_tag" {
-  description = "(Required) The image tag in the container repository"
+  description = "(Required) The image tag in the container registry"
   type        = string
 }
 
