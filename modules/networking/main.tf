@@ -59,8 +59,24 @@ resource "azurerm_subnet" "private_subnet" {
   }
 }
 
-# Associate NAT gaetway with subnet
+# Associate NAT gateway with subnet
 resource "azurerm_subnet_nat_gateway_association" "main" {
   nat_gateway_id = azurerm_nat_gateway.nat.id
   subnet_id      = azurerm_subnet.private_subnet.id
+}
+
+# This is the network profile used by containers
+resource "azurerm_network_profile" "network_profile" {
+  name                = "${local.app}NetworkProfile"
+  location            = var.resource_group_location
+  resource_group_name = var.resource_group_name
+
+  container_network_interface {
+    name = "${local.app}NetworkInterface"
+
+    ip_configuration {
+      name      = "${local.app}IpConfig"
+      subnet_id = azurerm_subnet.private_subnet.id
+    }
+  }
 }
