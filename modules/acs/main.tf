@@ -1,13 +1,16 @@
+# This file creates a container instance that runs `run.sh` in the 
+# crawler repository image. This launches in a virtual network
+# with a private subnet routed to a NAT gatway associated with 
+# a public IP address.
+# 
+# This is loosely based off of these resources:
+# - Quickstart: https://learn.microsoft.com/en-us/azure/container-instances/container-instances-quickstart-terraform
+# - Using a VNet: https://truestorydavestorey.medium.com/how-to-get-an-azure-container-instance-running-inside-a-vnet-with-a-fileshare-mount-using-terraform-a12f5b2b86ce
+
 locals {
   app = var.append_workspace ? "${var.app}${title(terraform.workspace)}" : var.app
 }
 
-
-# This is loosely based off of these resources:
-# Quickstart for container instance:
-# https://learn.microsoft.com/en-us/azure/container-instances/container-instances-quickstart-terraform
-# Container instance w/ VNet:
-# https://truestorydavestorey.medium.com/how-to-get-an-azure-container-instance-running-inside-a-vnet-with-a-fileshare-mount-using-terraform-a12f5b2b86ce
 
 resource "azurerm_log_analytics_workspace" "logs" {
   name                = "${local.app}LogAnalytics"
